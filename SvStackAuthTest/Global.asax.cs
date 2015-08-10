@@ -25,7 +25,7 @@ namespace SvStackAuthTest
             {
                 Func<string, string> localize = s => HostContext.AppHost.ResolveLocalizedString(s, null);
                 Plugins.Add(new SessionFeature());
-                Config.AllowSessionIdsInHttpParams = true;
+                SetConfig(new HostConfig(){AllowSessionIdsInHttpParams = true});
 
                 var appSettings = new AppSettings();
                
@@ -39,7 +39,9 @@ namespace SvStackAuthTest
                 });
                 Plugins.Add(new RegistrationFeature());
                 Plugins.Add(authFeature);
-                container.Register<IUserAuthRepository>(new InMemoryAuthRepository());
+                var authRepo = new InMemoryAuthRepository();
+                container.Register<IUserAuthRepository>(authRepo);
+                authRepo.CreateUserAuth(new UserAuth() { UserName = "testuser" }, "testpassword");
             }
         }
 
